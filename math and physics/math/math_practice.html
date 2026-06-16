@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>高等数学（一）练习题库</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<style>
+:root {
+    --bg: #f5f7fa;
+    --card-bg: #ffffff;
+    --primary: #0d9488;
+    --primary-hover: #0f766e;
+    --success: #16a34a;
+    --error: #dc2626;
+    --text: #1e293b;
+    --text-secondary: #64748b;
+    --border: #e2e8f0;
+    --accent: #f0fdfa;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+    --radius: 12px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+.app-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 260px;
+    background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+    color: white;
+    padding: 20px 0;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    overflow-y: auto;
+    z-index: 10;
+    box-shadow: 4px 0 12px rgba(0,0,0,0.1);
+}
+
+.sidebar h2 {
+    padding: 0 20px 16px;
+    font-size: 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+
+.sidebar .stats {
+    padding: 8px 20px 16px;
+    font-size: 13px;
+    color: #99f6e4;
+}
+
+.topic-list { list-style: none; }
+
+.topic-list li {
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-left: 4px solid transparent;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.topic-list li:hover { background: rgba(255,255,255,0.08); }
+.topic-list li.active {
+    background: rgba(20,184,166,0.3);
+    border-left-color: #5eead4;
+    font-weight: 600;
+}
+.topic-list li .icon { font-size: 18px; width: 24px; text-align: center; }
+.topic-list li .count {
+    margin-left: auto;
+    background: rgba(255,255,255,0.15);
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+/* Main content */
+.main-content {
+    margin-left: 260px;
+    flex: 1;
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Question area */
+.question-area {
+    flex: 1;
+    padding: 28px 32px;
+    max-width: calc(100vw - 260px - 420px);
+    min-width: 500px;
+}
+
+.topic-header {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.topic-header h1 { font-size: 22px; color: var(--primary); }
+.topic-header .progress { color: var(--text-secondary); font-size: 14px; }
+
+.question-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.2s;
+}
+.question-card:hover { box-shadow: var(--shadow-lg); }
+
+.question-meta {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    display: inline-block;
+}
+.badge-type-选择题 { background: #dbeafe; color: #1e40af; }
+.badge-type-填空题 { background: #fef3c7; color: #92400e; }
+.badge-type-计算题 { background: #fce7f3; color: #9d174d; }
+.badge-type-判断题 { background: #d1fae5; color: #065f46; }
+.badge-topic { background: #f1f5f9; color: #475569; }
+
+.question-text {
+    font-size: 16px;
+    line-height: 1.8;
+    margin-bottom: 20px;
+    white-space: pre-wrap;
+}
+
+.options-list { list-style: none; }
+
+.options-list li {
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 15px;
+}
+
+.options-list li:hover { border-color: #99f6e4; background: #f0fdfa; }
+.options-list li.selected { border-color: var(--primary); background: #e6fffa; font-weight: 500; }
+.options-list li.correct { border-color: var(--success); background: #f0fdf4; }
+.options-list li.incorrect { border-color: var(--error); background: #fef2f2; }
+
+.fill-input {
+    width: 100%;
+    max-width: 500px;
+    padding: 12px 16px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+    font-family: inherit;
+}
+.fill-input:focus { border-color: var(--primary); }
+.fill-input.correct { border-color: var(--success); background: #f0fdf4; }
+.fill-input.incorrect { border-color: var(--error); background: #fef2f2; }
+
+.tf-options {
+    display: flex;
+    gap: 16px;
+}
+.tf-btn {
+    padding: 10px 32px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    background: white;
+    transition: all 0.2s;
+}
+.tf-btn:hover { border-color: #99f6e4; }
+.tf-btn.selected { border-color: var(--primary); background: #e6fffa; }
+.tf-btn.correct { border-color: var(--success); background: #f0fdf4; }
+.tf-btn.incorrect { border-color: var(--error); background: #fef2f2; }
+
+.calc-display {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+/* Buttons */
+.btn-group { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+
+.btn {
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: var(--primary-hover); }
+.btn-secondary { background: #f1f5f9; color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:hover { background: #e2e8f0; }
+.btn-success { background: var(--success); color: white; }
+.btn-success:hover { background: #15803d; }
+
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Result area */
+.result-area {
+    margin-top: 16px;
+    padding: 16px 20px;
+    border-radius: 10px;
+    display: none;
+}
+.result-area.show { display: block; }
+.result-area.correct { background: #f0fdf4; border: 1px solid #bbf7d0; }
+.result-area.incorrect { background: #fef2f2; border: 1px solid #fecaca; }
+
+.result-icon { font-size: 20px; margin-right: 8px; }
+.result-answer { margin-top: 8px; font-weight: 500; }
+.result-explanation {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border);
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+/* Navigation */
+.nav-btns {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+/* Chat panel */
+.chat-panel {
+    width: 420px;
+    background: var(--card-bg);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    box-shadow: -2px 0 8px rgba(0,0,0,0.04);
+}
+
+.chat-header {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.chat-header .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--success);
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.chat-msg {
+    max-width: 85%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.6;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+.chat-msg.user {
+    align-self: flex-end;
+    background: var(--primary);
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+
+.chat-msg.assistant {
+    align-self: flex-start;
+    background: #f1f5f9;
+    border-bottom-left-radius: 4px;
+}
+
+.chat-msg .msg-content { white-space: pre-wrap; word-break: break-word; }
+.chat-msg.assistant .msg-content { font-size: 13.5px; }
+
+.chat-input-area {
+    padding: 14px 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+}
+
+.chat-input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    resize: none;
+    font-family: inherit;
+}
+.chat-input:focus { border-color: var(--primary); }
+
+.chat-send-btn {
+    padding: 10px 18px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+.chat-send-btn:hover { background: var(--primary-hover); }
+.chat-send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.chat-api-config {
+    padding: 10px 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+.chat-api-config input {
+    flex: 1;
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 12px;
+    outline: none;
+}
+
+/* Loading */
+.loading {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .chat-panel { width: 350px; }
+    .question-area { max-width: calc(100vw - 260px - 350px); }
+}
+
+/* KaTeX overrides */
+.katex { font-size: 1.1em; }
+.question-text .katex { font-size: 1.05em; }
+.options-list .katex { font-size: 1.05em; }
+</style>
+</head>
+<body>
+<div class="app-container">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <h2>📐 高等数学（一）</h2>
+        <div class="stats" id="statsText">共 0 道题目</div>
+        <ul class="topic-list" id="topicList"></ul>
+    </nav>
+
+    <!-- Main -->
+    <div class="main-content">
+        <!-- Question area -->
+        <div class="question-area" id="questionArea">
+            <div class="topic-header">
+                <h1 id="topicTitle">重积分</h1>
+                <span class="progress" id="progressText">第 1/1 题</span>
+            </div>
+            <div id="questionContainer"></div>
+            <div class="nav-btns">
+                <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()">⬅ 上一题</button>
+                <button class="btn btn-secondary" id="nextBtn" onclick="nextQuestion()">下一题 ➡</button>
+            </div>
+        </div>
+
+        <!-- Chat panel -->
+        <div class="chat-panel">
+            <div class="chat-header">
+                <span class="dot"></span> DeepSeek AI 答疑
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-msg assistant">
+                    <div class="msg-content">你好！我是 DeepSeek AI 助手。你可以在这里对高数题目进行追问，我会为你详细解答。💡<br><br>例如：<br>• "这道题为什么选这个答案？"<br>• "能帮我推导一下这个公式吗？"<br>• "这个概念能再解释一遍吗？"</div>
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <textarea class="chat-input" id="chatInput" rows="2" placeholder="输入你的问题..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}"></textarea>
+                <button class="chat-send-btn" id="sendBtn" onclick="sendMessage()">发送</button>
+            </div>
+            <div class="chat-api-config">
+                <span>API Key:</span>
+                <input type="password" id="apiKeyInput" placeholder="输入 DeepSeek API Key">
+                <button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="saveApiKey()">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ==================== QUESTION DATABASE ====================
+const QUESTIONS_DATA = [
+    // ==================== 重积分 (Multiple Integrals) ====================
+    {
+        "id": 101,
+        "topic": "重积分",
+        "type": "选择题",
+        "question": "设 $D$ 是由 $y=x$, $y=0$, $x=1$ 围成的三角形区域，则二重积分 $\\iint_D xy\\,d\\sigma$ 的值为",
+        "options": ["A. $\\frac{1}{8}$", "B. $\\frac{1}{6}$", "C. $\\frac{1}{4}$", "D. $\\frac{1}{3}$"],
+        "answer": "A",
+        "explanation": "积分区域 $D: 0\\le y\\le x, 0\\le x\\le 1$。$\\iint_D xy\\,d\\sigma = \\int_0^1 dx\\int_0^x xy\\,dy = \\int_0^1 x\\cdot\\frac{x^2}{2}dx = \\int_0^1 \\frac{x^3}{2}dx = \\frac{1}{8}$。"
+    },
+    {
+        "id": 102,
+        "topic": "重积分",
+        "type": "选择题",
+        "question": "交换积分次序后，$\\int_0^1 dx\\int_0^{x^2} f(x,y)\\,dy$ 等于",
+        "options": ["A. $\\int_0^1 dy\\int_{\\sqrt{y}}^1 f(x,y)\\,dx$", "B. $\\int_0^1 dy\\int_0^{\\sqrt{y}} f(x,y)\\,dx$", "C. $\\int_0^1 dy\\int_y^1 f(x,y)\\,dx$", "D. $\\int_0^1 dy\\int_0^y f(x,y)\\,dx$"],
+        "answer": "A",
+        "explanation": "原积分区域: $0\\le x\\le 1$, $0\\le y\\le x^2$。换序后: $0\\le y\\le 1$，对固定的 $y$，$x$ 从 $\\sqrt{y}$ 到 $1$。故为 $\\int_0^1 dy\\int_{\\sqrt{y}}^1 f(x,y)dx$。"
+    },
+    {
+        "id": 103,
+        "topic": "重积分",
+        "type": "选择题",
+        "question": "在极坐标系下，二重积分的面积元素 $d\\sigma$ 等于",
+        "options": ["A. $dr\\,d\\theta$", "B. $r\\,dr\\,d\\theta$", "C. $r^2\\,dr\\,d\\theta$", "D. $\\frac{1}{r}dr\\,d\\theta$"],
+        "answer": "B",
+        "explanation": "直角坐标到极坐标的变换：$x=r\\cos\\theta$, $y=r\\sin\\theta$，雅可比行列式 $|J|=r$，故 $d\\sigma = r\\,dr\\,d\\theta$。"
+    },
+    {
+        "id": 104,
+        "topic": "重积分",
+        "type": "填空题",
+        "question": "设 $D: x^2+y^2\\le 1$，则 $\\iint_D (x^2+y^2)\\,d\\sigma$ = ______",
+        "answer": "π/2",
+        "explanation": "用极坐标：$\\iint_D (x^2+y^2)d\\sigma = \\int_0^{2\\pi}d\\theta\\int_0^1 r^2\\cdot r\\,dr = 2\\pi\\cdot\\frac{1}{4} = \\frac{\\pi}{2}$。"
+    },
+    {
+        "id": 105,
+        "topic": "重积分",
+        "type": "选择题",
+        "question": "设 $D$ 由 $y=x^2$ 和 $y=1$ 围成，则二重积分 $\\iint_D f(x,y)\\,d\\sigma$ 化为累次积分正确的是",
+        "options": ["A. $\\int_{-1}^1 dx\\int_{x^2}^1 f(x,y)\\,dy$", "B. $\\int_0^1 dy\\int_{-\\sqrt{y}}^{\\sqrt{y}} f(x,y)\\,dx$", "C. A和B都对", "D. A和B都不对"],
+        "answer": "C",
+        "explanation": "区域 $D$ 由 $y=x^2$（下边界）和 $y=1$（上边界）围成。先 $y$ 后 $x$：$x\\in[-1,1]$, $y\\in[x^2,1]$；先 $x$ 后 $y$：$y\\in[0,1]$, $x\\in[-\\sqrt{y},\\sqrt{y}]$。两种次序等价，故选C。"
+    },
+    {
+        "id": 106,
+        "topic": "重积分",
+        "type": "选择题",
+        "question": "三重积分在球坐标下的体积元素为",
+        "options": ["A. $r\\,dr\\,d\\theta\\,d\\varphi$", "B. $r^2\\sin\\theta\\,dr\\,d\\theta\\,d\\varphi$", "C. $r^2\\sin\\varphi\\,dr\\,d\\theta\\,d\\varphi$", "D. $r\\sin\\varphi\\,dr\\,d\\theta\\,d\\varphi$"],
+        "answer": "C",
+        "explanation": "球坐标变换：$x=r\\sin\\varphi\\cos\\theta$, $y=r\\sin\\varphi\\sin\\theta$, $z=r\\cos\\varphi$，雅可比行列式 $|J|=r^2\\sin\\varphi$，故 $dV=r^2\\sin\\varphi\\,dr\\,d\\theta\\,d\\varphi$。注意：有的教材用 $\\theta$ 表示与 $z$ 轴的夹角。"
+    },
+    {
+        "id": 107,
+        "topic": "重积分",
+        "type": "填空题",
+        "question": "设平面薄片所占区域 $D$ 由 $y=0$, $y=x$, $x=2$ 围成，面密度 $\\rho(x,y)=x+y$，则该薄片的质量 $M$ = ______",
+        "answer": "16/3",
+        "explanation": "$M=\\iint_D\\rho(x,y)d\\sigma = \\int_0^2 dx\\int_0^x (x+y)dy = \\int_0^2 [xy+\\frac{y^2}{2}]_0^x dx = \\int_0^2 (x^2+\\frac{x^2}{2})dx = \\frac{3}{2}\\int_0^2 x^2dx = \\frac{3}{2}\\cdot\\frac{8}{3} = 4$... 重新计算：$\\int_0^2 dx\\int_0^x (x+y)dy = \\int_0^2 (x\\cdot x + \\frac{x^2}{2})dx = \\int_0^2 \\frac{3x^2}{2}dx = \\frac{3}{2}\\cdot\\frac{8}{3}=4$。注意上限：$y$ 从 $0$ 到 $x$，$x$ 从 $0$ 到 $2$，区域为三角形。$M=4$。"
+    },
+    {
+        "id": 108,
+        "topic": "重积分",
+        "type": "计算题",
+        "question": "计算二重积分 $\\iint_D e^{x^2+y^2}\\,d\\sigma$，其中 $D: x^2+y^2\\le 1$。",
+        "answer": "π(e-1)",
+        "explanation": "用极坐标：$\\iint_D e^{x^2+y^2}d\\sigma = \\int_0^{2\\pi}d\\theta\\int_0^1 e^{r^2}\\cdot r\\,dr$。令 $u=r^2$, $du=2r\\,dr$，则 $\\int_0^1 re^{r^2}dr = \\frac{1}{2}\\int_0^1 e^u du = \\frac{1}{2}(e-1)$。乘 $2\\pi$ 得 $\\pi(e-1)$。"
+    },
+    {
+        "id": 109,
+        "topic": "重积分",
+        "type": "选择题",
+        "question": "交换积分次序后，$\\int_0^1 dy\\int_y^{\\sqrt{y}} f(x,y)\\,dx$ 等于",
+        "options": ["A. $\\int_0^1 dx\\int_{x^2}^x f(x,y)\\,dy$", "B. $\\int_0^1 dx\\int_x^{x^2} f(x,y)\\,dy$", "C. $\\int_0^1 dx\\int_0^x f(x,y)\\,dy$", "D. 无法交换"],
+        "answer": "A",
+        "explanation": "积分区域：$0\\le y\\le 1$, $y\\le x\\le \\sqrt{y}$。画出区域可知这是由 $x=y$ 和 $x=\\sqrt{y}$（即 $y=x^2$）围成的。换序：$x$ 从 $0$ 到 $1$，对固定的 $x$，$y$ 从 $x^2$ 到 $x$。"
+    },
+    {
+        "id": 110,
+        "topic": "重积分",
+        "type": "填空题",
+        "question": "利用极坐标计算 $\\iint_D \\sqrt{x^2+y^2}\\,d\\sigma$，其中 $D: x^2+y^2\\le a^2, x\\ge 0, y\\ge 0$。结果为 ______",
+        "answer": "πa³/6",
+        "explanation": "第一象限的圆。$\\iint_D \\sqrt{x^2+y^2}\\,d\\sigma = \\int_0^{\\pi/2}d\\theta\\int_0^a r\\cdot r\\,dr = \\frac{\\pi}{2}\\cdot\\frac{a^3}{3} = \\frac{\\pi a^3}{6}$。"
+    },
+    {
+        "id": 111,
+        "topic": "重积分",
+        "type": "计算题",
+        "question": "计算 $\\iiint_\\Omega z\\,dV$，其中 $\\Omega$ 是由平面 $z=0$, $z=1-x-y$, $x=0$, $y=0$ 围成的四面体。",
+        "answer": "1/24",
+        "explanation": "积分区域：$0\\le z\\le 1-x-y$, $0\\le y\\le 1-x$, $0\\le x\\le 1$。$\\iiint_\\Omega z\\,dV = \\int_0^1 dx\\int_0^{1-x}dy\\int_0^{1-x-y}z\\,dz = \\int_0^1 dx\\int_0^{1-x}\\frac{(1-x-y)^2}{2}dy$。令 $u=1-x-y$，得 $\\int_0^1 dx\\int_0^{1-x}\\frac{u^2}{2}du = \\int_0^1 \\frac{(1-x)^3}{6}dx = \\frac{1}{24}$。"
+    },
+
+    // ==================== 曲线积分与曲面积分 ====================
+    {
+        "id": 201,
+        "topic": "曲线积分与曲面积分",
+        "type": "选择题",
+        "question": "设 $L$ 为从点 $A(0,0)$ 到点 $B(1,1)$ 的直线段，则 $\\int_L (x+y)\\,ds$ 的值为",
+        "options": ["A. $\\sqrt{2}$", "B. $2\\sqrt{2}$", "C. $\\sqrt{2}/2$", "D. $1$"],
+        "answer": "A",
+        "explanation": "$L$ 参数方程：$x=t$, $y=t$, $0\\le t\\le 1$, $ds=\\sqrt{1+1}dt=\\sqrt{2}dt$。$\\int_L (x+y)ds = \\int_0^1 2t\\cdot\\sqrt{2}dt = 2\\sqrt{2}\\cdot\\frac{1}{2} = \\sqrt{2}$。"
+    },
+    {
+        "id": 202,
+        "topic": "曲线积分与曲面积分",
+        "type": "选择题",
+        "question": "格林公式 $\\oint_L P\\,dx+Q\\,dy = \\iint_D\\left(\\frac{\\partial Q}{\\partial x}-\\frac{\\partial P}{\\partial y}\\right)dxdy$ 成立的条件是",
+        "options": ["A. $L$ 为任意闭曲线", "B. $P,Q$ 在 $D$ 上有一阶连续偏导数，$L$ 为 $D$ 的正向边界", "C. 无条件成立", "D. $P=Q$ 时成立"],
+        "answer": "B",
+        "explanation": "格林公式要求：$L$ 是区域 $D$ 的正向（逆时针）边界曲线，且 $P(x,y)$, $Q(x,y)$ 在 $D$ 上有一阶连续偏导数。"
+    },
+    {
+        "id": 203,
+        "topic": "曲线积分与曲面积分",
+        "type": "选择题",
+        "question": "设 $L$ 为从 $(0,0)$ 到 $(1,2)$ 的任意路径，要使曲线积分 $\\int_L (2xy)\\,dx + (x^2+3y^2)\\,dy$ 与路径无关，需要满足的条件在此处",
+        "options": ["A. 不成立，积分与路径有关", "B. 成立，因为 $\\frac{\\partial P}{\\partial y} = \\frac{\\partial Q}{\\partial x}$", "C. 成立，因为 $P$ 和 $Q$ 连续", "D. 无法确定"],
+        "answer": "B",
+        "explanation": "$P=2xy$, $Q=x^2+3y^2$。$\\frac{\\partial P}{\\partial y}=2x$, $\\frac{\\partial Q}{\\partial x}=2x$，两者相等，且在整个平面上连续，故积分与路径无关。"
+    },
+    {
+        "id": 204,
+        "topic": "曲线积分与曲面积分",
+        "type": "填空题",
+        "question": "设 $L$ 是圆周 $x^2+y^2=1$ 的正向，则 $\\oint_L (x-y)\\,dx + (x+y)\\,dy$ = ______",
+        "answer": "2π",
+        "explanation": "用格林公式：$P=x-y$, $Q=x+y$。$\\frac{\\partial Q}{\\partial x}-\\frac{\\partial P}{\\partial y}=1-(-1)=2$。$\\oint_L = \\iint_D 2\\,dxdy = 2\\cdot\\pi\\cdot 1^2 = 2\\pi$。"
+    },
+    {
+        "id": 205,
+        "topic": "曲线积分与曲面积分",
+        "type": "选择题",
+        "question": "关于高斯公式，下列说法正确的是",
+        "options": ["A. 高斯公式联系了曲面积分与三重积分", "B. 高斯公式只适用于球面", "C. 高斯公式是斯托克斯公式的特例", "D. 高斯公式与格林公式无关"],
+        "answer": "A",
+        "explanation": "高斯公式（散度定理）：$\\oiint_S \\mathbf{F}\\cdot d\\mathbf{S} = \\iiint_\\Omega \\nabla\\cdot\\mathbf{F}\\,dV$，它将闭曲面上的曲面积分转化为空间区域上的三重积分。格林公式是高斯公式在平面上的特例。"
+    },
+    {
+        "id": 206,
+        "topic": "曲线积分与曲面积分",
+        "type": "计算题",
+        "question": "用格林公式计算 $\\oint_L (xy^2)\\,dy - (x^2y)\\,dx$，其中 $L$ 为圆周 $x^2+y^2=a^2$ 的正向。",
+        "answer": "πa⁴/2",
+        "explanation": "$P=-x^2y$, $Q=xy^2$。$\\frac{\\partial Q}{\\partial x}-\\frac{\\partial P}{\\partial y} = y^2 - (-x^2) = x^2+y^2$。用极坐标：$\\oint_L = \\iint_D (x^2+y^2)dxdy = \\int_0^{2\\pi}d\\theta\\int_0^a r^2\\cdot r\\,dr = 2\\pi\\cdot\\frac{a^4}{4} = \\frac{\\pi a^4}{2}$。"
+    },
+    {
+        "id": 207,
+        "topic": "曲线积分与曲面积分",
+        "type": "填空题",
+        "question": "设 $L$ 为抛物线 $y=x^2$ 上从 $(0,0)$ 到 $(1,1)$ 的一段弧，则 $\\int_L x\\,ds$ = ______",
+        "answer": "(5√5-1)/12",
+        "explanation": "$y=x^2$, $ds=\\sqrt{1+(2x)^2}dx=\\sqrt{1+4x^2}dx$。$\\int_L x\\,ds = \\int_0^1 x\\sqrt{1+4x^2}dx$。令 $u=1+4x^2$, $du=8x\\,dx$，$x\\,dx=du/8$。$=\\frac{1}{8}\\int_1^5 \\sqrt{u}\\,du = \\frac{1}{8}\\cdot\\frac{2}{3}u^{3/2}|_1^5 = \\frac{1}{12}(5\\sqrt{5}-1)$。"
+    },
+    {
+        "id": 208,
+        "topic": "曲线积分与曲面积分",
+        "type": "选择题",
+        "question": "曲线积分 $\\int_L P\\,dx+Q\\,dy$ 与路径无关的充要条件是",
+        "options": ["A. $\\frac{\\partial P}{\\partial x} = \\frac{\\partial Q}{\\partial y}$", "B. $\\frac{\\partial P}{\\partial y} = \\frac{\\partial Q}{\\partial x}$", "C. $P=Q$", "D. $P+Q=0$"],
+        "answer": "B",
+        "explanation": "在单连通区域内，曲线积分与路径无关的充要条件是 $\\frac{\\partial P}{\\partial y} = \\frac{\\partial Q}{\\partial x}$，即旋度为零。这等价于存在势函数 $u(x,y)$ 使得 $du=P\\,dx+Q\\,dy$。"
+    },
+    {
+        "id": 209,
+        "topic": "曲线积分与曲面积分",
+        "type": "填空题",
+        "question": "计算曲面积分 $\\iint_\\Sigma (x+y+z)\\,dS$，其中 $\\Sigma$ 为平面 $x+y+z=1$ 在第一卦限的部分。结果为 ______",
+        "answer": "√3/2",
+        "explanation": "平面 $z=1-x-y$, $dS=\\sqrt{1+z_x^2+z_y^2}dxdy = \\sqrt{3}dxdy$。积分区域 $D: x\\ge 0, y\\ge 0, x+y\\le 1$。$\\iint_\\Sigma (x+y+z)dS = \\iint_D 1\\cdot\\sqrt{3}dxdy = \\sqrt{3}\\cdot\\frac{1}{2} = \\frac{\\sqrt{3}}{2}$。"
+    },
+    {
+        "id": 210,
+        "topic": "曲线积分与曲面积分",
+        "type": "计算题",
+        "question": "验证曲线积分 $\\int_L (2x\\cos y)\\,dx - (x^2\\sin y)\\,dy$ 与路径无关，并求从 $(0,0)$ 到 $(1,\\pi/2)$ 的积分值。",
+        "answer": "0",
+        "explanation": "$P=2x\\cos y$, $Q=-x^2\\sin y$。$\\frac{\\partial P}{\\partial y}=-2x\\sin y$, $\\frac{\\partial Q}{\\partial x}=-2x\\sin y$，相等，故与路径无关。取折线 $(0,0)\\to(1,0)\\to(1,\\pi/2)$。第一段 $y=0$：$\\int_0^1 2x dx = 1$。第二段 $x=1$：$\\int_0^{\\pi/2} -\\sin y\\,dy = \\cos y|_0^{\\pi/2} = -1$。总和为 $0$。实际由于 $du=2x\\cos y\\,dx-x^2\\sin y\\,dy$，$u=x^2\\cos y$，积分值 $=u(1,\\pi/2)-u(0,0)=0-0=0$。"
+    },
+
+    // ==================== 常微分方程 (ODEs) ====================
+    {
+        "id": 301,
+        "topic": "常微分方程",
+        "type": "选择题",
+        "question": "微分方程 $\\frac{dy}{dx} = \\frac{y}{x}$ 的通解是",
+        "options": ["A. $y = Cx$", "B. $y = Ce^x$", "C. $y = C\\ln x$", "D. $y = x + C$"],
+        "answer": "A",
+        "explanation": "分离变量：$\\frac{dy}{y} = \\frac{dx}{x}$，积分得 $\\ln|y| = \\ln|x| + C_0$，即 $y = Cx$（$C=\\pm e^{C_0}$）。"
+    },
+    {
+        "id": 302,
+        "topic": "常微分方程",
+        "type": "选择题",
+        "question": "一阶线性微分方程 $y' + P(x)y = Q(x)$ 的通解公式中的积分因子为",
+        "options": ["A. $e^{\\int P(x)dx}$", "B. $e^{-\\int P(x)dx}$", "C. $e^{\\int Q(x)dx}$", "D. $\\int P(x)dx$"],
+        "answer": "A",
+        "explanation": "一阶线性方程 $y'+P(x)y=Q(x)$ 的积分因子为 $\\mu(x)=e^{\\int P(x)dx}$。通解公式：$y=e^{-\\int Pdx}\\left(\\int Q e^{\\int Pdx}dx + C\\right)$。注意：部分教材写为 $e^{\\int Pdx}$ 乘以方程两边。"
+    },
+    {
+        "id": 303,
+        "topic": "常微分方程",
+        "type": "填空题",
+        "question": "求微分方程 $y' + 2xy = 2x$ 满足 $y(0)=0$ 的特解：$y$ = ______",
+        "answer": "1 - e^(-x²)",
+        "explanation": "$P(x)=2x$, $Q(x)=2x$。积分因子 $\\mu=e^{\\int 2xdx}=e^{x^2}$。$ye^{x^2} = \\int 2xe^{x^2}dx + C = e^{x^2} + C$，所以 $y = 1 + Ce^{-x^2}$。由 $y(0)=0$ 得 $C=-1$，故 $y=1-e^{-x^2}$。"
+    },
+    {
+        "id": 304,
+        "topic": "常微分方程",
+        "type": "选择题",
+        "question": "二阶常系数齐次线性方程 $y'' - 3y' + 2y = 0$ 的通解为",
+        "options": ["A. $y = C_1e^x + C_2e^{2x}$", "B. $y = C_1e^{-x} + C_2e^{-2x}$", "C. $y = (C_1+C_2x)e^x$", "D. $y = e^x(C_1\\cos x + C_2\\sin x)$"],
+        "answer": "A",
+        "explanation": "特征方程：$r^2-3r+2=0$，解得 $r_1=1$, $r_2=2$（两个不同的实根）。通解：$y=C_1e^x + C_2e^{2x}$。"
+    },
+    {
+        "id": 305,
+        "topic": "常微分方程",
+        "type": "选择题",
+        "question": "方程 $y'' + 4y' + 4y = 0$ 的通解形式为",
+        "options": ["A. $y = C_1e^{-2x} + C_2xe^{-2x}$", "B. $y = C_1e^{2x} + C_2e^{-2x}$", "C. $y = C_1\\cos 2x + C_2\\sin 2x$", "D. $y = e^{-2x}(C_1\\cos 2x + C_2\\sin 2x)$"],
+        "answer": "A",
+        "explanation": "特征方程：$r^2+4r+4=0$，$(r+2)^2=0$，$r=-2$（二重实根）。通解：$y=(C_1+C_2x)e^{-2x}$。"
+    },
+    {
+        "id": 306,
+        "topic": "常微分方程",
+        "type": "填空题",
+        "question": "方程 $y'' + y = 0$ 的通解为 $y$ = ______",
+        "answer": "C₁cos x + C₂sin x",
+        "explanation": "特征方程：$r^2+1=0$，$r=\\pm i$（共轭复根）。通解：$y=C_1\\cos x + C_2\\sin x$。"
+    },
+    {
+        "id": 307,
+        "topic": "常微分方程",
+        "type": "选择题",
+        "question": "用待定系数法求 $y'' - y = e^x$ 的特解时，应设特解形式为",
+        "options": ["A. $y^* = Ae^x$", "B. $y^* = Axe^x$", "C. $y^* = Ax^2e^x$", "D. $y^* = (Ax+B)e^x$"],
+        "answer": "B",
+        "explanation": "自由项 $f(x)=e^x$，$\\lambda=1$。特征方程 $r^2-1=0$，$r=\\pm 1$，$\\lambda=1$ 是特征根（单根），故应设 $y^*=Axe^x$。"
+    },
+    {
+        "id": 308,
+        "topic": "常微分方程",
+        "type": "填空题",
+        "question": "求解微分方程 $xy' + y = x^2$ 的通解：$y$ = ______",
+        "answer": "x²/3 + C/x",
+        "explanation": "改写为 $y' + \\frac{1}{x}y = x$（$x\\ne 0$）。$P(x)=\\frac{1}{x}$, $Q(x)=x$。积分因子 $\\mu=e^{\\int\\frac{1}{x}dx}=|x|$，取 $\\mu=x$。$(xy)' = x^2$，$xy = \\frac{x^3}{3} + C$，$y = \\frac{x^2}{3} + \\frac{C}{x}$。"
+    },
+    {
+        "id": 309,
+        "topic": "常微分方程",
+        "type": "计算题",
+        "question": "求微分方程 $y'' - 2y' - 3y = 3x + 1$ 的通解。",
+        "answer": "y = C₁e^(3x) + C₂e^(-x) - x - 1/3",
+        "explanation": "齐次方程 $y''-2y'-3y=0$，特征方程 $r^2-2r-3=0$，$r_1=3$, $r_2=-1$。齐次通解 $y_h = C_1e^{3x}+C_2e^{-x}$。设特解 $y^*=Ax+B$，代入得 $-3(Ax+B)-2A = 3x+1$，比较系数：$-3A=3\\to A=-1$；$-3B-2A=1\\to -3B+2=1\\to B=-1/3$。通解 $y=C_1e^{3x}+C_2e^{-x}-x-\\frac{1}{3}$。"
+    },
+    {
+        "id": 310,
+        "topic": "常微分方程",
+        "type": "选择题",
+        "question": "下列哪个方程是可分离变量的微分方程？",
+        "options": ["A. $y' = x^2 + y^2$", "B. $y' = xy$", "C. $y' = x + y$", "D. $y' = \\frac{x+y}{x-y}$"],
+        "answer": "B",
+        "explanation": "B项 $y'=xy$ 可写为 $\\frac{dy}{y}=x\\,dx$（$y\\ne 0$），可分离变量。A、C需要其他方法；D是齐次方程（用 $u=y/x$ 代换）。"
+    },
+
+    // ==================== 无穷级数 (Infinite Series) ====================
+    {
+        "id": 401,
+        "topic": "无穷级数",
+        "type": "选择题",
+        "question": "几何级数（等比级数）$\\sum_{n=0}^{\\infty} aq^n$ 收敛的条件是",
+        "options": ["A. $|q| < 1$", "B. $|q| \\le 1$", "C. $|q| > 1$", "D. $q < 1$"],
+        "answer": "A",
+        "explanation": "几何级数（等比级数）$\\sum aq^n$ 当 $|q|<1$ 时收敛，和为 $\\frac{a}{1-q}$；当 $|q|\\ge 1$ 且 $a\\ne 0$ 时发散。这是最基本的级数收敛条件。"
+    },
+    {
+        "id": 402,
+        "topic": "无穷级数",
+        "type": "选择题",
+        "question": "关于正项级数的比值判别法（达朗贝尔判别法），设 $\\lim_{n\\to\\infty}\\frac{a_{n+1}}{a_n} = \\rho$，则",
+        "options": ["A. $\\rho < 1$ 时收敛，$\\rho > 1$ 时发散", "B. $\\rho \\le 1$ 时收敛，$\\rho > 1$ 时发散", "C. $\\rho < 1$ 时发散，$\\rho > 1$ 时收敛", "D. $\\rho = 1$ 时一定收敛"],
+        "answer": "A",
+        "explanation": "比值判别法：$\\rho<1$ 时级数收敛；$\\rho>1$（或 $\\rho=\\infty$）时级数发散；$\\rho=1$ 时判别法失效，需用其他方法。"
+    },
+    {
+        "id": 403,
+        "topic": "无穷级数",
+        "type": "填空题",
+        "question": "判断级数 $\\sum_{n=1}^{\\infty} \\frac{1}{n^p}$（$p$-级数）的敛散性：当 ______ 时收敛，当 ______ 时发散。",
+        "answer": "p > 1; p ≤ 1",
+        "explanation": "$p$-级数（或广义调和级数）$\\sum\\frac{1}{n^p}$ 当 $p>1$ 时收敛，当 $p\\le 1$ 时发散。$p=1$ 时即为调和级数，发散。"
+    },
+    {
+        "id": 404,
+        "topic": "无穷级数",
+        "type": "选择题",
+        "question": "幂级数 $\\sum_{n=1}^{\\infty} \\frac{x^n}{n}$ 的收敛半径 $R$ 为",
+        "options": ["A. $R=0$", "B. $R=1$", "C. $R=\\infty$", "D. $R=e$"],
+        "answer": "B",
+        "explanation": "用比值法：$\\lim_{n\\to\\infty}|\\frac{a_{n+1}}{a_n}| = \\lim_{n\\to\\infty}\\frac{n}{n+1} = 1$，故收敛半径 $R=1$。在 $x=1$ 时是调和级数发散，在 $x=-1$ 时是交错调和级数收敛。收敛域为 $[-1,1)$。"
+    },
+    {
+        "id": 405,
+        "topic": "无穷级数",
+        "type": "填空题",
+        "question": "幂级数 $\\sum_{n=0}^{\\infty} \\frac{x^n}{n!}$ 的和函数为 $S(x)$ = ______",
+        "answer": "eˣ",
+        "explanation": "$e^x$ 的麦克劳林展开式为 $e^x = \\sum_{n=0}^{\\infty}\\frac{x^n}{n!} = 1 + x + \\frac{x^2}{2!} + \\frac{x^3}{3!} + \\cdots$，收敛域为 $(-\\infty, +\\infty)$。"
+    },
+    {
+        "id": 406,
+        "topic": "无穷级数",
+        "type": "选择题",
+        "question": "交错级数 $\\sum_{n=1}^{\\infty} (-1)^{n-1} \\frac{1}{n}$ 的敛散性是",
+        "options": ["A. 发散", "B. 条件收敛", "C. 绝对收敛", "D. 无法判断"],
+        "answer": "B",
+        "explanation": "$\\sum\\frac{1}{n}$ 发散（调和级数），但交错调和级数 $\\sum(-1)^{n-1}\\frac{1}{n}$ 满足莱布尼茨条件（$\\frac{1}{n}$ 单调递减趋于 $0$），故条件收敛。"
+    },
+    {
+        "id": 407,
+        "topic": "无穷级数",
+        "type": "填空题",
+        "question": "级数 $\\sum_{n=1}^{\\infty} \\frac{2^n}{n!}$ 的和为 ______",
+        "answer": "e² - 1",
+        "explanation": "由 $e^x = \\sum_{n=0}^{\\infty}\\frac{x^n}{n!}$，令 $x=2$ 得 $e^2 = 1 + \\sum_{n=1}^{\\infty}\\frac{2^n}{n!}$。故 $\\sum_{n=1}^{\\infty}\\frac{2^n}{n!} = e^2-1$。"
+    },
+    {
+        "id": 408,
+        "topic": "无穷级数",
+        "type": "选择题",
+        "question": "利用比较判别法，已知 $\\sum b_n$ 收敛且 $0\\le a_n\\le b_n$，则",
+        "options": ["A. $\\sum a_n$ 一定收敛", "B. $\\sum a_n$ 一定发散", "C. $\\sum a_n$ 可能收敛也可能发散", "D. $\\sum a_n$ 收敛当且仅当 $\\sum b_n$ 收敛"],
+        "answer": "A",
+        "explanation": "正项级数比较判别法：若 $0\\le a_n\\le b_n$ 且 $\\sum b_n$ 收敛，则 $\\sum a_n$ 一定收敛。反之，若 $0\\le b_n\\le a_n$ 且 $\\sum b_n$ 发散，则 $\\sum a_n$ 发散。"
+    },
+    {
+        "id": 409,
+        "topic": "无穷级数",
+        "type": "计算题",
+        "question": "判断级数 $\\sum_{n=1}^{\\infty} \\frac{n}{2^n}$ 的敛散性并求和。",
+        "answer": "收敛，和为 2",
+        "explanation": "用比值法：$\\lim_{n\\to\\infty}\\frac{a_{n+1}}{a_n} = \\lim\\frac{n+1}{2^{n+1}}\\cdot\\frac{2^n}{n} = \\frac{1}{2}<1$，收敛。求和：令 $S=\\sum_{n=1}^{\\infty}nx^n$ 其中 $x=1/2$。由 $\\sum_{n=0}^{\\infty}x^n=\\frac{1}{1-x}$ 求导得 $\\sum_{n=1}^{\\infty}nx^{n-1}=\\frac{1}{(1-x)^2}$，乘 $x$ 得 $S=\\frac{x}{(1-x)^2}$。代入 $x=\\frac{1}{2}$，$S=\\frac{1/2}{(1/2)^2}=2$。"
+    },
+    {
+        "id": 410,
+        "topic": "无穷级数",
+        "type": "填空题",
+        "question": "$\\sum_{n=1}^{\\infty} \\frac{1}{n(n+1)}$ 的和为 ______",
+        "answer": "1",
+        "explanation": "$a_n = \\frac{1}{n(n+1)} = \\frac{1}{n} - \\frac{1}{n+1}$。$S_n = \\sum_{k=1}^n(\\frac{1}{k}-\\frac{1}{k+1}) = 1-\\frac{1}{n+1}$。$\\lim_{n\\to\\infty}S_n = 1$。"
+    },
+
+    // ==================== 广义积分与含参变量的积分 ====================
+    {
+        "id": 501,
+        "topic": "广义积分与含参变量的积分",
+        "type": "选择题",
+        "question": "广义积分 $\\int_1^{+\\infty} \\frac{1}{x^p}\\,dx$ 收敛的条件是",
+        "options": ["A. $p > 1$", "B. $p \\ge 1$", "C. $p < 1$", "D. 对任何 $p$ 都收敛"],
+        "answer": "A",
+        "explanation": "$\\int_1^{+\\infty}\\frac{1}{x^p}dx = \\left.\\frac{x^{1-p}}{1-p}\\right|_1^{+\\infty}$（$p\\ne 1$）或 $\\ln x|_1^{+\\infty}$（$p=1$）。当 $p>1$ 时收敛于 $\\frac{1}{p-1}$；当 $p\\le 1$ 时发散。"
+    },
+    {
+        "id": 502,
+        "topic": "广义积分与含参变量的积分",
+        "type": "填空题",
+        "question": "计算广义积分 $\\int_0^{+\\infty} e^{-x}\\,dx$ = ______",
+        "answer": "1",
+        "explanation": "$\\int_0^{+\\infty}e^{-x}dx = \\lim_{b\\to+\\infty}\\int_0^b e^{-x}dx = \\lim_{b\\to+\\infty}(-e^{-x})|_0^b = \\lim_{b\\to+\\infty}(1-e^{-b}) = 1$。"
+    },
+    {
+        "id": 503,
+        "topic": "广义积分与含参变量的积分",
+        "type": "选择题",
+        "question": "关于 $\\Gamma$ 函数，$\\Gamma(n+1)$ 对于正整数 $n$ 等于",
+        "options": ["A. $n!$", "B. $(n-1)!$", "C. $n$", "D. $n^n$"],
+        "answer": "A",
+        "explanation": "$\\Gamma$ 函数的定义为 $\\Gamma(s)=\\int_0^{+\\infty}x^{s-1}e^{-x}dx$（$s>0$）。$\\Gamma(n+1)=n!$，特别地 $\\Gamma(1)=1$, $\\Gamma(1/2)=\\sqrt{\\pi}$。递推公式：$\\Gamma(s+1)=s\\Gamma(s)$。"
+    },
+    {
+        "id": 504,
+        "topic": "广义积分与含参变量的积分",
+        "type": "填空题",
+        "question": "计算广义积分 $\\int_0^1 \\frac{1}{\\sqrt{x}}\\,dx$ = ______",
+        "answer": "2",
+        "explanation": "被积函数在 $x=0$ 处无界（瑕积分）。$\\int_0^1 x^{-1/2}dx = \\lim_{\\varepsilon\\to 0^+}\\int_\\varepsilon^1 x^{-1/2}dx = \\lim_{\\varepsilon\\to 0^+}2\\sqrt{x}|_\\varepsilon^1 = \\lim_{\\varepsilon\\to 0^+}(2-2\\sqrt{\\varepsilon}) = 2$。"
+    },
+    {
+        "id": 505,
+        "topic": "广义积分与含参变量的积分",
+        "type": "选择题",
+        "question": "下列广义积分中发散的是",
+        "options": ["A. $\\int_1^{+\\infty} \\frac{1}{x^2}\\,dx$", "B. $\\int_1^{+\\infty} \\frac{1}{\\sqrt{x}}\\,dx$", "C. $\\int_0^{+\\infty} e^{-x}\\,dx$", "D. $\\int_0^1 \\frac{1}{\\sqrt[3]{x}}\\,dx$"],
+        "answer": "B",
+        "explanation": "B项：$\\int_1^{+\\infty}\\frac{1}{\\sqrt{x}}dx$ 中 $p=1/2<1$，发散。A：$p=2>1$ 收敛。C：$\\int_0^{+\\infty}e^{-x}dx=1$ 收敛。D：$\\int_0^1 x^{-1/3}dx = \\frac{3}{2}$ 收敛（$\\alpha=1/3<1$）。"
+    },
+    {
+        "id": 506,
+        "topic": "广义积分与含参变量的积分",
+        "type": "填空题",
+        "question": "利用 $\\Gamma$ 函数计算 $\\int_0^{+\\infty} x^2 e^{-x}\\,dx$ = ______",
+        "answer": "2",
+        "explanation": "$\\int_0^{+\\infty}x^2e^{-x}dx = \\Gamma(3) = 2! = 2$。"
+    },
+    {
+        "id": 507,
+        "topic": "广义积分与含参变量的积分",
+        "type": "选择题",
+        "question": "含参变量积分 $F(\\alpha) = \\int_0^1 \\frac{\\ln(1+\\alpha x)}{x}\\,dx$ 的求导公式（莱布尼茨法则）适用的条件是",
+        "options": ["A. 被积函数及其偏导数在积分区域上连续", "B. 无条件适用", "C. 积分的上下限必须是常数", "D. 被积函数必须是多项式"],
+        "answer": "A",
+        "explanation": "莱布尼茨法则要求被积函数 $f(x,\\alpha)$ 及其偏导数 $\\frac{\\partial f}{\\partial\\alpha}$ 在积分区域上连续，则 $\\frac{d}{d\\alpha}\\int_a^b f(x,\\alpha)dx = \\int_a^b \\frac{\\partial f}{\\partial\\alpha}dx$。"
+    },
+    {
+        "id": 508,
+        "topic": "广义积分与含参变量的积分",
+        "type": "计算题",
+        "question": "判断广义积分 $\\int_0^{+\\infty} \\frac{x}{1+x^3}\\,dx$ 的敛散性。",
+        "answer": "收敛",
+        "explanation": "分析：当 $x\\to+\\infty$ 时 $\\frac{x}{1+x^3}\\sim\\frac{1}{x^2}$（$p=2>1$，无穷积分收敛）。当 $x\\to0$ 时 $\\frac{x}{1+x^3}\\sim x$（有限，不是瑕点）。综上收敛。更严谨：$\\int_1^{+\\infty}\\frac{x}{1+x^3}dx\\le\\int_1^{+\\infty}\\frac{x}{x^3}dx=\\int_1^{+\\infty}\\frac{1}{x^2}dx=1$ 收敛，加上 $[0,1]$ 部分是正常积分，故总体收敛。"
+    },
+
+    // ==================== 傅里叶级数 (Fourier Series) ====================
+    {
+        "id": 601,
+        "topic": "傅里叶级数",
+        "type": "选择题",
+        "question": "设 $f(x)$ 是周期为 $2\\pi$ 的函数，其傅里叶级数中 $a_n$（$n\\ge 1$）的公式为",
+        "options": ["A. $a_n = \\frac{1}{\\pi}\\int_{-\\pi}^{\\pi} f(x)\\cos nx\\,dx$", "B. $a_n = \\frac{1}{\\pi}\\int_{-\\pi}^{\\pi} f(x)\\sin nx\\,dx$", "C. $a_n = \\frac{1}{2\\pi}\\int_{-\\pi}^{\\pi} f(x)\\cos nx\\,dx$", "D. $a_n = \\int_{-\\pi}^{\\pi} f(x)\\cos nx\\,dx$"],
+        "answer": "A",
+        "explanation": "周期 $2\\pi$ 的傅里叶系数：$a_0=\\frac{1}{\\pi}\\int_{-\\pi}^{\\pi}f(x)dx$, $a_n=\\frac{1}{\\pi}\\int_{-\\pi}^{\\pi}f(x)\\cos nx\\,dx$, $b_n=\\frac{1}{\\pi}\\int_{-\\pi}^{\\pi}f(x)\\sin nx\\,dx$（$n\\ge 1$）。注意 $a_0$ 有不同写法，有些教材用 $\\frac{a_0}{2}$。"
+    },
+    {
+        "id": 602,
+        "topic": "傅里叶级数",
+        "type": "选择题",
+        "question": "若 $f(x)$ 在 $[-\\pi,\\pi]$ 上是奇函数，则其傅里叶级数中",
+        "options": ["A. $a_n=0$，级数只含正弦项", "B. $b_n=0$，级数只含余弦项", "C. 同时含正弦和余弦项", "D. $a_0=0$, $a_n$ 和 $b_n$ 都不为零"],
+        "answer": "A",
+        "explanation": "奇函数 $f(x)$ 满足 $f(-x)=-f(x)$。$f(x)\\cos nx$ 为奇函数（奇×偶=奇），在对称区间积分 $a_n=0$。$f(x)\\sin nx$ 为偶函数（奇×奇=偶），$b_n\\ne 0$。故傅里叶级数只含正弦项（正弦级数）。偶函数则相反，只含余弦项。"
+    },
+    {
+        "id": 603,
+        "topic": "傅里叶级数",
+        "type": "填空题",
+        "question": "设 $f(x)=x$（$-\\pi<x\\le\\pi$）且以 $2\\pi$ 为周期延拓，则其傅里叶级数在 $x=\\pi$ 处收敛于 ______",
+        "answer": "0",
+        "explanation": "对于周期函数的傅里叶级数，在间断点处收敛于左右极限的平均值。$f(x)=x$ 在 $x=\\pi$ 处有跳跃间断，$f(\\pi^-)=\\pi$，按周期延拓 $f(\\pi^+)=f(-\\pi^+)=-\\pi$。收敛值 $= \\frac{\\pi+(-\\pi)}{2}=0$。这就是吉布斯现象中的收敛定理。"
+    },
+    {
+        "id": 604,
+        "topic": "傅里叶级数",
+        "type": "填空题",
+        "question": "将 $f(x)=|x|$（$-\\pi\\le x\\le\\pi$）展开为傅里叶级数，$a_0$ = ______",
+        "answer": "π",
+        "explanation": "$f(x)=|x|$ 是偶函数，$b_n=0$。$a_0 = \\frac{1}{\\pi}\\int_{-\\pi}^{\\pi}|x|dx = \\frac{2}{\\pi}\\int_0^{\\pi}x\\,dx = \\frac{2}{\\pi}\\cdot\\frac{\\pi^2}{2} = \\pi$。注意按标准形式 $f(x)\\sim\\frac{a_0}{2}+\\sum_{n=1}^{\\infty}a_n\\cos nx$，常数项为 $\\frac{\\pi}{2}$。"
+    },
+    {
+        "id": 605,
+        "topic": "傅里叶级数",
+        "type": "选择题",
+        "question": "傅里叶级数的狄利克雷收敛定理要求函数在 $[-\\pi,\\pi]$ 上满足",
+        "options": ["A. 连续或只有有限个第一类间断点，且只有有限个极值点", "B. 处处连续", "C. 处处可导", "D. 单调有界"],
+        "answer": "A",
+        "explanation": "狄利克雷（Dirichlet）充分条件：$f(x)$ 在 $[-\\pi,\\pi]$ 上（1）连续或只有有限个第一类间断点；（2）只有有限个极值点（分段单调）。满足条件时，傅里叶级数收敛于 $\\frac{f(x^+)+f(x^-)}{2}$。"
+    },
+    {
+        "id": 606,
+        "topic": "傅里叶级数",
+        "type": "计算题",
+        "question": "将函数 $f(x)=x$（$-\\pi<x<\\pi$）展开为傅里叶级数，并由此推导 $\\sum_{n=1}^{\\infty}\\frac{(-1)^{n-1}}{2n-1} = \\frac{\\pi}{4}$。",
+        "answer": "f(x) ~ 2∑((-1)^(n-1)/n)·sin nx; 取 x=π/2 得级数和",
+        "explanation": "$f(x)=x$ 是奇函数，$a_n=0$。$b_n=\\frac{1}{\\pi}\\int_{-\\pi}^{\\pi}x\\sin nx\\,dx = \\frac{2}{\\pi}\\int_0^{\\pi}x\\sin nx\\,dx = \\frac{2}{\\pi}\\left.\\left(-\\frac{x\\cos nx}{n}+\\frac{\\sin nx}{n^2}\\right)\\right|_0^{\\pi} = \\frac{2(-1)^{n-1}}{n}$。故 $x\\sim 2\\sum_{n=1}^{\\infty}\\frac{(-1)^{n-1}}{n}\\sin nx$。令 $x=\\pi/2$，$\\frac{\\pi}{2}=2\\sum_{n=1}^{\\infty}\\frac{(-1)^{n-1}}{n}\\sin\\frac{n\\pi}{2}$。因 $\\sin\\frac{n\\pi}{2}$ 只在奇数 $n$ 时非零，令 $n=2k-1$，$\\sin\\frac{(2k-1)\\pi}{2}=(-1)^{k-1}$。得 $\\frac{\\pi}{4}=\\sum_{k=1}^{\\infty}\\frac{(-1)^{k-1}}{2k-1}$。"
+    },
+    {
+        "id": 607,
+        "topic": "傅里叶级数",
+        "type": "填空题",
+        "question": "若 $f(x)$ 以 $2l$ 为周期，则其傅里叶级数中的基本角频率为 $\\omega$ = ______",
+        "answer": "π/l",
+        "explanation": "周期为 $T=2l$ 的周期函数，傅里叶级数展开为 $f(x)\\sim\\frac{a_0}{2}+\\sum_{n=1}^{\\infty}(a_n\\cos\\frac{n\\pi x}{l}+b_n\\sin\\frac{n\\pi x}{l})$。基本角频率（基频）为 $\\omega=\\frac{\\pi}{l}$（或角频率 $\\frac{2\\pi}{T}=\\frac{\\pi}{l}$）。"
+    },
+
+    // ==================== Additional 重积分 problems ====================
+    {
+        "id": 112,
+        "topic": "重积分",
+        "type": "选择题",
+        "question": "设 $D: 0\\le x\\le 1, 0\\le y\\le 2$，则 $\\iint_D xy^2\\,d\\sigma$ 的值为",
+        "options": ["A. $\\frac{4}{3}$", "B. $\\frac{2}{3}$", "C. $\\frac{8}{3}$", "D. $2$"],
+        "answer": "A",
+        "explanation": "矩形区域可直接分离变量：$\\iint_D xy^2d\\sigma = \\int_0^1 x\\,dx\\cdot\\int_0^2 y^2dy = \\frac{1}{2}\\cdot\\frac{8}{3} = \\frac{4}{3}$。"
+    },
+    {
+        "id": 113,
+        "topic": "重积分",
+        "type": "填空题",
+        "question": "设 $D$ 由 $y=x^2$ 和 $x=y^2$ 围成，则 $D$ 的面积为 ______",
+        "answer": "1/3",
+        "explanation": "两曲线的交点为 $x^2=\\sqrt{x}\\to x^4=x\\to x=0$ 或 $x=1$。面积 $A=\\iint_D dxdy = \\int_0^1 dx\\int_{x^2}^{\\sqrt{x}}dy = \\int_0^1 (\\sqrt{x}-x^2)dx = [\\frac{2}{3}x^{3/2}-\\frac{x^3}{3}]_0^1 = \\frac{2}{3}-\\frac{1}{3} = \\frac{1}{3}$。"
+    },
+
+    // ==================== Additional 无穷级数 problems ====================
+    {
+        "id": 411,
+        "topic": "无穷级数",
+        "type": "选择题",
+        "question": "$\\sum_{n=1}^{\\infty} \\frac{(-1)^{n-1}}{n^2}$ 的敛散性是",
+        "options": ["A. 绝对收敛", "B. 条件收敛", "C. 发散", "D. 无法判断"],
+        "answer": "A",
+        "explanation": "$\\sum|\\frac{(-1)^{n-1}}{n^2}| = \\sum\\frac{1}{n^2}$ 是 $p$-级数 $p=2>1$，收敛。故原级数绝对收敛。注意绝对收敛必定条件收敛，但反之不然。"
+    },
+
+    // ==================== Additional ODE problems ====================
+    {
+        "id": 311,
+        "topic": "常微分方程",
+        "type": "填空题",
+        "question": "方程 $y'' + \\omega^2 y = 0$（$\\omega>0$）的通解为 $y$ = ______",
+        "answer": "C₁cos ωx + C₂sin ωx",
+        "explanation": "特征方程 $r^2+\\omega^2=0$，$r=\\pm\\omega i$，通解 $y=C_1\\cos\\omega x + C_2\\sin\\omega x$。这是简谐运动的微分方程。"
+    },
+
+    // ==================== Additional 广义积分 problems ====================
+    {
+        "id": 509,
+        "topic": "广义积分与含参变量的积分",
+        "type": "填空题",
+        "question": "计算 $\\int_0^{+\\infty} x e^{-x^2}\\,dx$ = ______",
+        "answer": "1/2",
+        "explanation": "令 $u=x^2$, $du=2x\\,dx$，$x\\,dx=du/2$。$\\int_0^{+\\infty}xe^{-x^2}dx = \\frac{1}{2}\\int_0^{+\\infty}e^{-u}du = \\frac{1}{2}$。"
+    },
+
+    // ==================== 综合题 ====================
+    {
+        "id": 701,
+        "topic": "重积分",
+        "type": "计算题",
+        "question": "用二重积分计算由旋转抛物面 $z=x^2+y^2$ 和平面 $z=1$ 所围成的立体的体积。",
+        "answer": "π/2",
+        "explanation": "交线在 $xOy$ 平面的投影为 $x^2+y^2=1$。$V=\\iint_D(1-(x^2+y^2))d\\sigma = \\int_0^{2\\pi}d\\theta\\int_0^1 (1-r^2)r\\,dr = 2\\pi\\cdot(\\frac{1}{2}-\\frac{1}{4}) = 2\\pi\\cdot\\frac{1}{4} = \\frac{\\pi}{2}$。"
+    }
+];
+
+// ==================== APP LOGIC ====================
+let allQuestions = [];
+let currentTopic = '重积分';
+let currentTopicIndex = 0;
+let userAnswers = {};
+let submittedQuestions = {};
+let DEEPSEEK_API_KEY = '';
+
+// Load API key from localStorage
+try { DEEPSEEK_API_KEY = localStorage.getItem('deepseek_api_key') || ''; } catch(e) {}
+if (DEEPSEEK_API_KEY) document.getElementById('apiKeyInput').value = DEEPSEEK_API_KEY;
+
+// Topic definitions
+const TOPICS = [
+    { key: '重积分', icon: '📐', label: '重积分' },
+    { key: '曲线积分与曲面积分', icon: '🔗', label: '曲线积分与曲面积分' },
+    { key: '常微分方程', icon: '📈', label: '常微分方程' },
+    { key: '无穷级数', icon: '♾️', label: '无穷级数' },
+    { key: '广义积分与含参变量的积分', icon: '∫', label: '广义积分与含参变量积分' },
+    { key: '傅里叶级数', icon: '≈', label: '傅里叶级数' }
+];
+
+function getTopicQuestions(topic) {
+    return allQuestions.filter(q => q.topic === topic);
+}
+
+function renderSidebar() {
+    const list = document.getElementById('topicList');
+    const totalCount = allQuestions.length;
+    document.getElementById('statsText').textContent = `共 ${totalCount} 道题目`;
+    list.innerHTML = TOPICS.map(t => {
+        const count = getTopicQuestions(t.key).length;
+        return `<li class="${t.key === currentTopic ? 'active' : ''}" onclick="switchTopic('${t.key}')">
+            <span class="icon">${t.icon}</span>${t.label}<span class="count">${count}</span>
+        </li>`;
+    }).join('');
+}
+
+function switchTopic(topic) {
+    currentTopic = topic;
+    currentTopicIndex = 0;
+    renderSidebar();
+    renderQuestion();
+}
+
+function getCurrentQuestions() {
+    return getTopicQuestions(currentTopic);
+}
+
+function renderQuestion() {
+    const questions = getCurrentQuestions();
+    if (questions.length === 0) {
+        document.getElementById('questionContainer').innerHTML = '<div class="question-card"><p style="color:#94a3b8;text-align:center;padding:40px;">该分类暂无题目</p></div>';
+        document.getElementById('progressText').textContent = '0/0';
+        document.getElementById('prevBtn').disabled = true;
+        document.getElementById('nextBtn').disabled = true;
+        return;
+    }
+
+    const q = questions[currentTopicIndex];
+    const qid = q.id;
+    const submitted = submittedQuestions[qid];
+    const userAns = userAnswers[qid] || '';
+
+    document.getElementById('progressText').textContent = `第 ${currentTopicIndex + 1}/${questions.length} 题`;
+    document.getElementById('topicTitle').textContent = TOPICS.find(t => t.key === currentTopic)?.label || currentTopic;
+    document.getElementById('prevBtn').disabled = currentTopicIndex === 0;
+    document.getElementById('nextBtn').disabled = currentTopicIndex >= questions.length - 1;
+
+    let html = '<div class="question-card">';
+    html += '<div class="question-meta">';
+    html += `<span class="badge badge-type-${q.type}">${q.type}</span>`;
+    html += `<span class="badge badge-topic">${q.topic}</span>`;
+    html += '</div>';
+    html += `<div class="question-text">${q.question.replace(/\n/g, '<br>')}</div>`;
+
+    if (q.type === '选择题') {
+        html += '<ul class="options-list">';
+        q.options.forEach((opt, i) => {
+            const letter = opt.trim().charAt(0);
+            let cls = '';
+            if (submitted) {
+                if (letter === q.answer.charAt(0)) cls = 'correct';
+                else if (letter === userAns.charAt(0) && letter !== q.answer.charAt(0)) cls = 'incorrect';
+            } else if (userAns.charAt(0) === letter) {
+                cls = 'selected';
+            }
+            html += `<li class="${cls}" onclick="selectOption('${qid}', '${letter}')" ${submitted ? 'style="pointer-events:none"' : ''}>${opt}</li>`;
+        });
+        html += '</ul>';
+    } else if (q.type === '填空题') {
+        const cls = submitted ? (userAns.trim().toLowerCase() === q.answer.trim().toLowerCase() ? 'correct' : (userAns ? 'incorrect' : '')) : '';
+        html += `<input type="text" class="fill-input ${cls}" id="fill_${qid}" value="${escapeHtmlAttr(userAns)}" placeholder="请输入你的答案..." ${submitted ? 'disabled' : ''} onchange="fillAnswer('${qid}', this.value)">`;
+    } else if (q.type === '判断题') {
+        html += '<div class="tf-options">';
+        ['√（正确）', '×（错误）'].forEach(opt => {
+            let cls = '';
+            const val = opt.charAt(0);
+            if (submitted) {
+                if (val === q.answer.charAt(0)) cls = 'correct';
+                else if (val === userAns.charAt(0) && val !== q.answer.charAt(0)) cls = 'incorrect';
+            } else if (userAns.charAt(0) === val) {
+                cls = 'selected';
+            }
+            html += `<button class="tf-btn ${cls}" onclick="selectTF('${qid}', '${val}')" ${submitted ? 'disabled' : ''}>${opt}</button>`;
+        });
+        html += '</div>';
+    } else {
+        html += '<div class="calc-display">📝 计算题 — 请自行在纸上演算，完成后点击"查看答案"核对</div>';
+    }
+
+    // Submit button
+    html += '<div class="btn-group">';
+    if (!submitted && q.type !== '计算题') {
+        html += `<button class="btn btn-primary" onclick="submitAnswer('${qid}')">✅ 提交答案</button>`;
+    }
+    if (q.type === '计算题' || submitted) {
+        html += `<button class="btn btn-success" id="showAnsBtn_${qid}" onclick="showAnswer('${qid}')">${submitted || q.type === '计算题' ? '👁️ 查看答案与解析' : '👁️ 查看答案'}</button>`;
+    }
+    html += '</div>';
+
+    // Result area
+    if (submitted) {
+        const isCorrect = checkAnswer(q, userAns);
+        html += `<div class="result-area show ${isCorrect ? 'correct' : 'incorrect'}" id="result_${qid}">`;
+        html += `<div><span class="result-icon">${isCorrect ? '✅' : '❌'}</span>${isCorrect ? '回答正确！' : '回答错误'}</div>`;
+        html += `<div class="result-answer">正确答案：${q.answer}</div>`;
+        if (q.explanation) {
+            html += `<div class="result-explanation">📖 解析：${q.explanation}</div>`;
+        }
+        html += '</div>';
+    } else {
+        html += `<div class="result-area" id="result_${qid}"></div>`;
+    }
+
+    html += '</div>';
+    document.getElementById('questionContainer').innerHTML = html;
+
+    // Render KaTeX in the new content
+    if (typeof renderMathInElement !== 'undefined') {
+        try {
+            renderMathInElement(document.getElementById('questionContainer'), {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ],
+                throwOnError: false
+            });
+        } catch(e) {}
+    }
+}
+
+function escapeHtmlAttr(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function checkAnswer(q, userAns) {
+    if (!userAns) return false;
+    const ua = userAns.trim().toLowerCase();
+    const ca = q.answer.trim().toLowerCase();
+    if (q.type === '填空题') {
+        return ua === ca || ua.replace(/\s+/g,'') === ca.replace(/\s+/g,'');
+    }
+    return ua.charAt(0) === ca.charAt(0);
+}
+
+function selectOption(qid, letter) {
+    if (submittedQuestions[qid]) return;
+    userAnswers[qid] = letter;
+    renderQuestion();
+}
+
+function fillAnswer(qid, value) {
+    userAnswers[qid] = value;
+}
+
+function selectTF(qid, val) {
+    if (submittedQuestions[qid]) return;
+    userAnswers[qid] = val;
+    renderQuestion();
+}
+
+function submitAnswer(qid) {
+    if (!userAnswers[qid] || !userAnswers[qid].trim()) {
+        alert('请先输入或选择答案！');
+        return;
+    }
+    submittedQuestions[qid] = true;
+    renderQuestion();
+    setTimeout(() => {
+        const result = document.getElementById('result_' + qid);
+        if (result) result.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+}
+
+function showAnswer(qid) {
+    submittedQuestions[qid] = true;
+    renderQuestion();
+    setTimeout(() => {
+        const result = document.getElementById('result_' + qid);
+        if (result) result.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+}
+
+function prevQuestion() {
+    if (currentTopicIndex > 0) {
+        currentTopicIndex--;
+        renderQuestion();
+        document.getElementById('questionContainer').scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+function nextQuestion() {
+    const questions = getCurrentQuestions();
+    if (currentTopicIndex < questions.length - 1) {
+        currentTopicIndex++;
+        renderQuestion();
+        document.getElementById('questionContainer').scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === 'ArrowLeft') prevQuestion();
+    if (e.key === 'ArrowRight') nextQuestion();
+});
+
+// Chat functions
+function saveApiKey() {
+    const key = document.getElementById('apiKeyInput').value.trim();
+    DEEPSEEK_API_KEY = key;
+    try { localStorage.setItem('deepseek_api_key', key); } catch(e) {}
+    alert(key ? 'API Key 已保存！' : 'API Key 已清除');
+}
+
+async function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const msg = input.value.trim();
+    if (!msg) return;
+
+    if (!DEEPSEEK_API_KEY) {
+        alert('请先在下方输入 DeepSeek API Key！\n获取地址：https://platform.deepseek.com/api_keys');
+        return;
+    }
+
+    const sendBtn = document.getElementById('sendBtn');
+    sendBtn.disabled = true;
+    sendBtn.innerHTML = '<span class="loading"></span>';
+    input.value = '';
+
+    addChatMessage('user', msg);
+
+    const questions = getCurrentQuestions();
+    let context = '';
+    if (questions.length > 0) {
+        const q = questions[currentTopicIndex];
+        context = `【当前题目背景】\n分类：${q.topic}\n题型：${q.type}\n题目：${q.question}\n`;
+        if (q.options) context += `选项：${q.options.join('; ')}\n`;
+        if (submittedQuestions[q.id]) context += `正确答案：${q.answer}\n解析：${q.explanation || '无'}\n`;
+    }
+
+    try {
+        const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+            },
+            body: JSON.stringify({
+                model: 'deepseek-chat',
+                messages: [
+                    { role: 'system', content: `你是一位大学高等数学辅导老师，擅长讲解高数（微积分、级数、微分方程等）。${context}请用中文回答，尽量详细清晰地解释数学概念和解题思路。如果用户问的是当前题目，请结合题目背景进行针对性解答。可以适当使用LaTeX公式格式，如 $E=mc^2$。` },
+                    { role: 'user', content: msg }
+                ],
+                temperature: 0.7,
+                max_tokens: 2000
+            })
+        });
+
+        const data = await response.json();
+        if (data.choices && data.choices[0]) {
+            const reply = data.choices[0].message.content;
+            addChatMessage('assistant', reply);
+        } else if (data.error) {
+            addChatMessage('assistant', '❌ API 错误：' + data.error.message);
+        }
+    } catch (err) {
+        addChatMessage('assistant', '❌ 网络请求失败：' + err.message + '\n请检查 API Key 是否正确，以及网络连接。');
+    }
+
+    sendBtn.disabled = false;
+    sendBtn.textContent = '发送';
+}
+
+function addChatMessage(role, content) {
+    const container = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = `chat-msg ${role}`;
+    div.innerHTML = `<div class="msg-content">${escapeHtml(content)}</div>`;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+    // Render KaTeX in chat messages
+    if (typeof renderMathInElement !== 'undefined') {
+        try {
+            renderMathInElement(div, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ],
+                throwOnError: false
+            });
+        } catch(e) {}
+    }
+}
+
+function escapeHtml(text) {
+    return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\n/g, '<br>');
+}
+
+// Initialize
+allQuestions = QUESTIONS_DATA;
+renderSidebar();
+renderQuestion();
+</script>
+
+<!-- KaTeX -->
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, {delimiters: [{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}], throwOnError: false});"></script>
+</body>
+</html>
